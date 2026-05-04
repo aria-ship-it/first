@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>人教版化学互动课堂：电解质的电离</title>
+    <style>
+        :root { --chem-blue: #0056b3; --chem-green: #28a745; --chem-gray: #f8f9fa; }
+        body { font-family: 'PingFang SC', sans-serif; background: #eceff1; margin: 0; padding: 20px; }
+        .lesson-card { max-width: 900px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: var(--chem-blue); color: white; padding: 20px; text-align: center; }
+        .step-nav { display: flex; background: #343a40; color: #adb5bd; cursor: pointer; }
+        .step-nav div { flex: 1; padding: 15px; text-align: center; border-right: 1px solid #495057; }
+        .step-nav div.active { background: var(--chem-blue); color: white; font-weight: bold; }
+        .content { padding: 30px; min-height: 500px; }
+        .interactive-area { border: 2px solid #e9ecef; border-radius: 10px; padding: 20px; margin: 20px 0; background: var(--chem-gray); text-align: center; }
+        
+        /* 导入环节：人体导电灯 */
+        .human-lamp { width: 100px; height: 100px; border-radius: 50%; background: #555; margin: 20px auto; transition: 0.3s; box-shadow: 0 0 0px yellow; }
+        .lamp-on { background: #ffeb3b; box-shadow: 0 0 50px #ffeb3b; }
+
+        /* 探究1：盐水小车 */
+        .car-track { width: 100%; height: 100px; border-bottom: 3px solid #333; position: relative; margin-top: 50px; }
+        #car { width: 80px; position: absolute; left: 0; bottom: 5px; transition: 5s linear; }
+        .micro-view { display: flex; justify-content: space-around; margin-top: 20px; }
+        .crystal-box { border: 2px solid #333; padding: 10px; width: 150px; }
+
+        /* 探究2：方程式 */
+        .equation-input { font-size: 20px; padding: 10px; width: 300px; text-align: center; border: 2px solid var(--chem-blue); }
+        .feedback { margin-top: 10px; font-weight: bold; }
+
+        .hidden { display: none; }
+        button { padding: 10px 25px; background: var(--chem-blue); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="lesson-card">
+    <div class="header">
+        <h1>第一章 第二节：电解质的电离</h1>
+        <p>建立“宏观—微观—符号”三重表征 </p>
+    </div>
+
+    <div class="step-nav" id="mainNav">
+        <div onclick="goTo(0)" class="active">情境导入</div>
+        <div onclick="goTo(1)">探究1:电离本质</div>
+        <div onclick="goTo(2)">探究2:符号表征</div>
+        <div onclick="goTo(3)">探究3:酸碱盐定义</div>
+    </div>
+
+    <div class="content">
+        <div id="step0" class="section">
+            <h2>情境演示：人体导电实验灯</h2>
+            <p>师：湿手不能触碰电源。让我们邀请一位同学上台，握住实验灯的两极... </p>
+            <div class="interactive-area">
+                <div id="humanLamp" class="human-lamp"></div>
+                <p>点击下方按钮模拟学生握住电极</p>
+                <button onmousedown="toggleLamp(true)" onmouseup="toggleLamp(false)">握住两极</button>
+            </div>
+            <p><strong>思考：</strong> 灯亮了说明人体能导电。我们身体里有什么物质让灯亮起来的？ </p>
+        </div>
+
+        <div id="step1" class="section hidden">
+            <h2>探究1：盐水动力小车与电离本质</h2>
+            <p>观察神奇的“盐水小车”：只需加入 NaCl 固体和水，小车就能跑起来！ </p>
+            <div class="interactive-area">
+                <div class="car-track">
+                    <img id="car" src="https://cdn-icons-png.flaticon.com/512/741/741407.png" alt="小车">
+                </div>
+                <button onclick="runCar()">向槽中加入 NaCl 溶液</button>
+                <button onclick="resetCar()" style="background:#6c757d">重置</button>
+            </div>
+            <div class="micro-view">
+                <div class="crystal-box">
+                    <strong>NaCl 固体</strong><br>离子受限，不能自由移动 
+                </div>
+                <div style="font-size: 30px;">→</div>
+                <div class="crystal-box" style="border-color: var(--chem-green); color: var(--chem-green);">
+                    <strong>NaCl 溶液</strong><br>解离出自由移动的离子 
+                </div>
+            </div>
+            <p style="background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">
+                <strong>阿伦尼乌斯观点：</strong> 电解质溶于水即电离，<strong>不需要通电</strong>。 
+            </p>
+        </div>
+
+        <div id="step2" class="section hidden">
+            <h2>探究2：电离方程式书写</h2>
+            <p>师：电离是微观过程，我们用化学符号来表征。请尝试书写以下物质的电离方程式： </p>
+            <div class="interactive-area">
+                <p>题目：书写 <strong>硫酸 (H₂SO₄)</strong> 的电离方程式</p>
+                <input type="text" id="eqInput" class="equation-input" placeholder="例如：NaCl=Na++Cl-">
+                <button onclick="checkEq()">提交检查</button>
+                <div id="eqFeedback" class="feedback"></div>
+            </div>
+            <div style="text-align: left;">
+                <strong>书写规则总结：</strong> 
+                <ul>
+                    <li>原子守恒、电荷守恒</li>
+                    <li>原子团（如 SO₄²⁻）一般不拆</li>
+                    <li>强电解质用“=”，弱电解质用可逆号</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="step3" class="section hidden">
+            <h2>探究3：从电离角度认识酸、碱、盐</h2>
+            <p>请观察以下电离产物，归纳它们的共同点： </p>
+            <table border="1" width="100%" style="border-collapse: collapse; text-align: center;">
+                <tr style="background: #eee;"><th>物质</th><th>电离方程式</th><th>归纳定义</th></tr>
+                <tr><td>HCl, H₂SO₄</td><td>... = <b>H⁺</b> + ...</td><td>阳离子全部是 <b>H⁺</b> 的是 <b>酸</b> </td></tr>
+                <tr><td>NaOH, KOH</td><td>... = ... + <b>OH⁻</b></td><td>阴离子全部是 <b>OH⁻</b> 的是 <b>碱</b> </td></tr>
+                <tr><td>NaCl, KNO₃</td><td>... = Mⁿ⁺ + Rⁿ⁻</td><td>产生金属/铵根离子和酸根离子的是 <b>盐</b> </td></tr>
+            </table>
+            <div class="interactive-area" style="background: #d4edda;">
+                <h3>🎉 课程小结</h3>
+                <p>电解质 → (溶于水/熔融) → 自由移动离子 → 导电能力 </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function goTo(stepIndex) {
+        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+        document.getElementById('step' + stepIndex).classList.remove('hidden');
+        
+        const navDivs = document.querySelectorAll('#mainNav div');
+        navDivs.forEach(d => d.classList.remove('active'));
+        navDivs[stepIndex].classList.add('active');
+    }
+
+    // 环节0：灯亮效果
+    function toggleLamp(on) {
+        const lamp = document.getElementById('humanLamp');
+        on ? lamp.classList.add('lamp-on') : lamp.classList.remove('lamp-on');
+    }
+
+    // 环节1：小车移动
+    function runCar() {
+        document.getElementById('car').style.left = '80%';
+    }
+    function resetCar() {
+        document.getElementById('car').style.left = '0';
+    }
+
+    // 环节2：方程式检查
+    function checkEq() {
+        const val = document.getElementById('eqInput').value.replace(/\s+/g, '');
+        const feedback = document.getElementById('eqFeedback');
+        // 简单匹配常见正确形式
+        if(val.includes('H2SO4=2H++SO42-') || val.includes('H₂SO₄=2H⁺+SO₄²⁻')) {
+            feedback.innerText = "✅ 正确！原子守恒且电荷守恒。";
+            feedback.style.color = "green";
+        } else {
+            feedback.innerText = "❌ 格式不准或不守恒，请检查系数和离子符号。";
+            feedback.style.color = "red";
+        }
+    }
+</script>
+
+</body>
+</html>
